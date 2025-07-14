@@ -1,4 +1,4 @@
-# Monte Carlo Localization for Vex Robotics
+# Monte Carlo Localization for Vex V5RC Robotics
 
 #### Credit to $${\color{purple} Maxx \space Wilson | GHOST}$$, $${\color{red} Benjamin \space | 687D}$$, and [Autonomous Mobile Robotics Laboratory](https://amrl.cs.utexas.edu/interactive-particle-filters/) for the tremendous help in the creation of my code
 
