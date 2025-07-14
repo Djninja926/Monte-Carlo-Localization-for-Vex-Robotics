@@ -11,6 +11,7 @@ Monte Carlo Localization can be highly useful for improving the robustness and a
 2. My code does have a really weird naming scheme, I know I'm just weird 😏
 
 **MOST IMPORTANT**
+
 3. This explanation is $${\color{red}NOT}$$ fully in-depth and skips out on a bit of the understanding of the actual physics of the robot to fully understand why certain things work or why certain variables are the value that they are. DO NOT BLINDLY COPY THE CODE because some parts are specific to a certain type of robot. For a full, in-depth understanding of the entire algorithm, take a look at [this paper](https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley), also written by me. 
 
 ### Particles
