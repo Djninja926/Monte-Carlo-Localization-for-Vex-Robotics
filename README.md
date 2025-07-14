@@ -8,7 +8,7 @@ Monte Carlo Localization can be highly useful for improving the robustness and a
 
 ### DISCLAIMERS!!!
 1. For our implementation, our map is rotated 90° clockwise (So that 0° is facing the ```+y``` direction) and turning clockwise +θ and counterclockwise is -θ
-2. My code does have a really weird naming scheme, I know I'm just weird 😏
+2. My code does have a really weird naming scheme, I know I'm just weird 🤷🏿‍♂️
 
 **MOST IMPORTANT**
 
