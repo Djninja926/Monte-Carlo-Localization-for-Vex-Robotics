@@ -2,12 +2,16 @@
 
 #### Credit to $${\color{purple} Maxx \space Wilson | GHOST}$$, $${\color{red} Benjamin \space | 687D}$$, and [Autonomous Mobile Robotics Laboratory](https://amrl.cs.utexas.edu/interactive-particle-filters/) for the tremendous help in the creation of my code
 
+Hi, my name is Apia Okorafor, Former Programmer for team 1082R, now Computer Science Student at the University of Texas at Austin. This is my code and explanation for my implementation of Monte Carlo Localization in Vexcode Pro V5.
+
 Monte Carlo Localization can be highly useful for improving the robustness and accuracy of the robot’s position tracking, especially in environments with uncertainty or complex features. Since VEX robots often operate in known environments, MCL allows the robot to maintain accurate localization by sampling multiple points of its position and refining them based on data from the distance sensors.
 
-MAKE SOME DISCLAIMERS
-1. OUR MAP BEING ROTATED WITH FRONT BEING +Y
-2. CODE BEING WEIRDLY NAMED, CRY ABOUT IT
-3. NOT FULLY INDEPTH IF YOU WANT TO FULLY UNDERSTAND GO READ MY FULL PAPER ON IT
+### DISCLAIMERS!!!
+1. For our implementation, our map is rotated 90° clockwise (So that 0° is facing the ```+y``` direction) and turning clockwise +θ and counterclockwise is -θ
+2. My code does have a really weird naming scheme, I know I'm just weird 😏
+
+**MOST IMPORTANT**
+3. This explanation is $${\color{red}NOT}$$ fully in-depth and skips out on a bit of the understanding of the actual physics of the robot to fully understand why certain things work or why certain variables are the value that they are. DO NOT BLINDLY COPY THE CODE because some parts are specific to a certain type of robot. For a full, in-depth understanding of the entire algorithm, take a look at [this paper](https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley), also written by me. 
 
 ### Particles
 
@@ -24,7 +28,7 @@ For MCL, the sensors we use are distance sensors. We created a custom class spec
 
 ## Field
 
-For the map of the field, we created our own Field class which holds all the information we need about the field to be able to understand our map.
+For the map of the field, we created our own Field class, which holds all the information we need about the field to be able to understand our map.
 
 ### Game Objects (Mobile Goals)
 
@@ -69,9 +73,9 @@ The most important part of this field class is the function
 get_sensor_distance(Particle& p, const MCLDistanceSensor& Sensor)
 ```
 
-This function takes in a particle, and a corresponding distance sensor object to be able to calculate the expected value of that sensor to be used in the **update step.**
+This function takes in a particle and a corresponding distance sensor object to be able to calculate the expected value of that sensor to be used in the **update step.**
 
-It uses some clever math to be able to do so as described here
+It uses some clever math to be able to do so, as described here
 
 Let $d$ be the distance to the wall. Let $\theta$ be the sensor heading. We can take advantage of the square shape of the field to determine the distance to the wall.
 
@@ -104,12 +108,12 @@ The predict section of the MCL is responsible for predicting the next state of e
 1. **Get the Robot’s Average Velocity**
    * ```Velo = getAvgVelocity() * VeloScale;```
    * Computes the average velocity of the robot and scales it with ```VeloScale``` to ensure the motion model is properly adjusted. NEED TO DESCRIBE HOW VELO SCALE IS CALCULATED
-2. **Create a Normal Distribution for Noise NEED TO TALK ABOUT SCALED NOISE DISRTUBUTION**
+2. **Create a Normal Distribution for Noise NEED TO TALK ABOUT SCALED NOISE DISTRIBUTION**
     * ```normal_distribution<double> dist_pos(0, Velo / 4)```;
     * This distribution models the uncertainty in motion by generating small random deviations in the particle positions.
 3. **Calculate the Correct Robot’s Angle (```Theta```)**
     * ```const double theta_ = Angle.rotation(degrees) * toRad + start_theta;```
-    * Ensures that the robot’s angle is in radians (Interial converted from Degrees) and is algnied with the correct starting angle.
+    * Ensures that the robot’s angle is in radians (Inertial converted from Degrees) and is aligned with the correct starting angle.
     * ```const double rotated_theta = M_PI_2 - theta_;```
     * Adjusts the angle to align with the coordinate system used for motion calculations.
 4. **Precompute Sin and Cos Values for Efficiency**
@@ -178,7 +182,7 @@ The update section of the MCL performs the weight update step, where each partic
             ```
             
         - Where:
-            - `Deviation` is the difference between predicted and actual measurement.
+            - `Deviation` is the difference between the predicted and actual measurement.
             - `inv_varience` is the inverse of twice the variance (With a standard deviation of 2 inches).
             - `inv_base` is the normalization factor.
 6. **Update Total Weight Sum and Assign Weights to Particles**
@@ -213,7 +217,7 @@ This approach helps the MCL algorithm balance between exploration (maintaining d
 
 ## Update Pose
 
-This section updates the estimated pose (X,Y,θ) of the robot based on the weighted average of all particles. It ensures that the final estimated position and orientation reflect the most probable location of the robot according to the particle filter.
+This section updates the estimated pose ```(X, Y, θ)``` of the robot based on the weighted average of all particles. It ensures that the final estimated position and orientation reflect the most probable location of the robot according to the particle filter.
 
 ![thirteen](./images/thirteen.png)
 
