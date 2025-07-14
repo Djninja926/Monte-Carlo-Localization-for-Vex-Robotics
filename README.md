@@ -7,8 +7,8 @@ Hi 👋🏿 My name is Apia Okorafor, Former Programmer for team 1082R, now Comp
 Monte Carlo Localization can be highly useful for improving the robustness and accuracy of the robot’s position tracking, especially in environments with uncertainty or complex features. Since VEX robots often operate in known environments, MCL allows the robot to maintain accurate localization by sampling multiple points of its position and refining them based on data from the distance sensors.
 
 ### DISCLAIMERS!!!
-1. For our implementation, our map is rotated 90° clockwise (So that 0° is facing the ```+y``` direction) and turning clockwise +θ and counterclockwise is -θ
-2. My code does have a really weird naming scheme, I know I'm just weird 🤷🏿‍♂️
+1. For our implementation, our map is rotated 90° clockwise (So that 0° is facing the ```+y``` direction), and turning clockwise is positive (+θ) and counterclockwise is negative (-θ), same as the Odometry paper by 5225A.
+2. My code does have a really weird naming scheme. I know I'm just weird. 🤷🏿‍♂️
 
 **MOST IMPORTANT**
 
