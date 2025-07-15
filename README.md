@@ -21,14 +21,20 @@ Monte Carlo Localization can be highly useful for improving the robustness and a
 
 The basis of MCL is the particle filter, where a “particle” is just a representation of the state of the robot. Since we know the state of the robot (or the robot variable we care about) are ```X, Y, and Theta```, we made a **Struct** to be a lightweight object to use for our particles.
 
-![one](./images/one.png)
+<p align="center">
+  <img src="./images/one.png" />
+</p>
 
 ### Sensors
 
 For MCL, the sensors we use are distance sensors. We created a custom class specifically for the MCL Distance Sensors to be able to only need to measure once every loop, adjust for the offsets from the sensors, and keep everything in one place.
 
-![two](./images/two.png)
-![three](./images/three.png)
+<p align="center">
+  <img src="./images/two.png" />
+</p>
+<p align="center">
+  <img src="./images/three.png" />
+</p>
 
 ## Field
 
@@ -69,7 +75,9 @@ For the map of the field, we created our own Field class, which holds all the in
 
 As well as the ```HalfSize``` of the field as for our purposes the middle of the field is (0, 0) so the furthest distance possible is +- 72 inches. This class is designed for the MCL, where the robot’s sensors need to detect mobile goals and walls. By efficiently calculating distances to objects, it helps navigation
 
-![four](./images/four.png)
+<p align="center">
+  <img src="./images/four.png" />
+</p>
 
 The most important part of this field class is the function
 
@@ -93,7 +101,9 @@ $|y+ sin{\theta}| < y_{max}$
 
 Horizontal walls are similar.
 
-![five](./images/five.png)
+<p align="center">
+  <img src="./images/five.png" />
+</p>
 
 ---
 
@@ -101,7 +111,9 @@ Horizontal walls are similar.
 
 The ```StartMCL``` function initializes the Monte Carlo Localization (MCL) process by creating and distributing particles around the robot's starting position. It sets up the initial belief of the robot’s position by adding noise to the given ```(x_, y_, theta_)``` values. Here’s a breakdown of what each part does. This function generates a set of particles that approximate the initial position of the robot. Each particle represents a possible state of the robot with small variations in position and orientation.
 
-![six](./images/six.png)
+<p align="center">
+  <img src="./images/six.png" />
+</p>
 
 # Main Algorithm
 
@@ -146,7 +158,9 @@ The predict section of the MCL is responsible for predicting the next state of e
     * ```p.y = clamp(p.y, -field_.HalfSize, field_.HalfSize);```
     * Ensures that particles stay within the field limits, preventing them from drifting outside the simulation area.
 
-![seven](./images/seven.png)
+<p align="center">
+  <img src="./images/seven.png" />
+</p>
 
 ## Update
 
@@ -177,7 +191,9 @@ The update section of the MCL performs the weight update step, where each partic
         
         The Gaussian (normal) distribution is applied to model uncertainty in sensor readings:
         
-        ![eight](./images/eight.png)
+        <p align="center">
+          <img src="./images/eight.png" />
+        </p>
         
         - This is implemented in the code as:
             
@@ -197,7 +213,9 @@ The update section of the MCL performs the weight update step, where each partic
     - **Otherwise, Normalize All Weights**
         - Ensures that the sum of all weights equals `1.0`, maintaining a proper probability distribution.
 
-![nine](./images/nine.png)
+<p align="center">
+  <img src="./images/nine.png" />
+</p>
 
 ## Resampling
 
@@ -206,8 +224,13 @@ Resampling is crucial for Monte Carlo Localization for several reasons:
 Without resampling, most particles would eventually have negligible weights, effectively wasting computational resources on particles that contribute little to the position estimate. Resampling also allows the algorithm to focus particles in regions of the state space with high probability, improving accuracy. As the robot moves and receives sensor data, resampling helps the particle distribution adapt to new information by replacing unlikely particles with more likely ones. **Resampling ensures that particles with higher weights (i.e., those that better match sensor measurements) are more likely to be chosen for the next iteration, while lower-weight particles are removed.**
 
 For our implementation, we’re resampling using stratified resampling.
-![ten](./images/ten.png)
-![eleven](./images/eleven.png)
+<p align="center">
+  <img src="./images/ten.png" />
+</p>
+
+<p align="center">
+  <img src="./images/eleven.png" />
+</p>
 
 The stratified approach used in this code has advantages over simpler methods:
 **Better Coverage:** By ensuring samples are drawn from each interval, stratified resampling maintains better diversity in the particle set.
@@ -217,13 +240,17 @@ The stratified approach used in this code has advantages over simpler methods:
 
 This approach helps the MCL algorithm balance between exploration (maintaining diverse particles) and exploitation (focusing on likely positions), which is essential for robust robot localization.
 
-![twelve](./images/twelve.png)
+<p align="center">
+  <img src="./images/twelve.png" />
+</p>
 
 ## Update Pose
 
 This section updates the estimated pose ```(X, Y, θ)``` of the robot based on the weighted average of all particles. It ensures that the final estimated position and orientation reflect the most probable location of the robot according to the particle filter.
 
-![thirteen](./images/thirteen.png)
+<p align="center">
+  <img src="./images/thirteen.png" />
+</p>
 
 ## References
 
