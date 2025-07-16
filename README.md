@@ -73,7 +73,7 @@ For the map of the field, we created our own Field class, which holds all the in
 * ```HalfSize```: Represents half the field’s size (```140.875 / 2```), used for wall calculations.
 * ```direction_to_sine``` and ```direction_to_cosine```: Lookup tables for sensor direction calculations.
 
-As well as the ```HalfSize``` of the field as for our purposes the middle of the field is (0, 0) so the furthest distance possible is +- 72 inches. This class is designed for the MCL, where the robot’s sensors need to detect mobile goals and walls. By efficiently calculating distances to objects, it helps navigation
+As well as the ```HalfSize``` of the field as for our purposes, the middle of the field is (0, 0), so the furthest distance possible is +- 72 inches. This class is designed for the MCL, where the robot’s sensors need to detect mobile goals and walls. By efficiently calculating distances to objects, it helps navigation
 
 <p align="center">
   <img src="./images/four.png" />
@@ -119,7 +119,7 @@ The ```StartMCL``` function initializes the Monte Carlo Localization (MCL) proce
 
 ## Predict
 
-The predict section of the MCL is responsible for predicting the next state of each particle based on the robot's motion model. It propagates the particles forward according to the robot’s estimated velocity while incorporating random noise to account for uncertainty.
+The prediction section of the MCL is responsible for predicting the next state of each particle based on the robot's motion model. It propagates the particles forward according to the robot’s estimated velocity while incorporating random noise to account for uncertainty.
 
 1. **Get the Robot’s Average Velocity**
    * ```Velo = getAvgVelocity() * VeloScale;```
@@ -233,12 +233,74 @@ For our implementation, we’re resampling using stratified resampling.
 </p>
 
 The stratified approach used in this code has advantages over simpler methods:
+
 **Better Coverage:** By ensuring samples are drawn from each interval, stratified resampling maintains better diversity in the particle set.
+
 **Reduced Variance:** The variance of the resampling process is reduced compared to purely random sampling.
+
 **Preservation of Distribution Shape:** The approach better preserves the shape of the original distribution while still focusing on high-probability regions.
+
 **Efficiency:** The implementation uses a binary search for efficient sampling, making it computationally effective.
 
 This approach helps the MCL algorithm balance between exploration (maintaining diverse particles) and exploitation (focusing on likely positions), which is essential for robust robot localization.
+
+### Breakdown of Key Steps:
+
+**1. Create Cumulative Distribution Function (CDF)**
+
+```
+CDF[0] = Particles[0].weight;
+for (int i = 1; i < num_particles; ++i) {
+    CDF[i] = CDF[i - 1] + Particles[i].weight;
+}
+```
+
+Builds a cumulative sum of particle weights, creating a probability distribution where each particle occupies a segment proportional to its weight.
+
+**2. Generate Random Starting Points for Stratified Sampling**
+
+```
+uniform_real_distribution<double> dist(0, inv_num_particles);
+```
+
+Creates a uniform random distribution in the range ```[0, 1/N]``` where ```N``` is the number of particles.
+
+**3. Perform Stratified Resampling**
+```
+for (int i = 0; i < num_particles; ++i) {
+    const double Point = i * (inv_num_particles) + dist(Random);
+```
+ - For each new particle position ```i```, calculates a sample point by:
+   - Dividing the probability space into ```N``` equal intervals of size ```1/N```
+   - Adding a small random offset within each interval to avoid deterministic selection
+
+**4. Find Corresponding Particle Using Binary Search**
+```
+const auto it = lower_bound(CDF.begin(), CDF.end(), Point);
+const auto index = std::distance(CDF.begin(), it);
+```
+Uses binary search to efficiently find which particle corresponds to the generated sample point in the CDF.
+
+**5. Store Selected Particle for Resampling**
+```
+Resampled.push_back(Particles[index]);
+```
+
+Adds the selected particle to the resampled collection. Particles with higher weights occupy larger segments in the CDF and are more likely to be selected multiple times.
+
+**6. Replace Original Particles with Resampled Ones**
+```
+Particles.swap(Resampled);
+```
+
+### Algorithm Complexity
+
+Time Complexity: ```O(N log N)``` due to binary search operations
+
+Space Complexity: ```O(N)``` for storing the CDF and resampled particles
+
+
+
 
 <p align="center">
   <img src="./images/twelve.png" />
