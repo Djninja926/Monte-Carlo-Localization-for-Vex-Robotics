@@ -128,7 +128,9 @@ The prediction section of the MCL is responsible for predicting the next state o
    * Computes the average velocity of the robot and scales it with ```VeloScale``` to ensure the motion model is properly adjusted.
    * The robot’s average velocity from the getAvgVelocity() function is an average of all motor ```RPM``` which need to be scaled into inches per second to properly add to the ```X, Y``` coordinates, which are in inches. To properly convert ```RPM``` into ```in/sec```, the conversion rate (VeloScale) must be calculated through the following equation:
 
-$${\frac{({rpm}_{\text{motors}} * \pi)}{60} * \text{Wheel Diameter} * \text{Drivebase Gear Ratio}}$$
+$${ \frac{({rpm}_{\text{motors}} * \pi)}{60} * \text{Wheel Diameter} * \text{Drivebase Gear Ratio} * {dt} }$$
+
+where ```dt``` is the change in time between each loop in seconds, ```Wheel Diameter``` is the diameter of the drivebase wheels in inches (```2.75, 3.25, 4```), and ```Drivebase Gear Ratio``` is the gear ratio from the motors to the wheels.
 
 2. **Create a Scaled Normal Distribution for Noise**
     * ```normal_distribution<double> dist_pos(0, Velo / 4)```;
