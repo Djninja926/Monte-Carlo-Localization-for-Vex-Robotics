@@ -109,7 +109,7 @@ Horizontal walls are similar.
 
 # Initialization
 
-The ```StartMCL``` function initializes the Monte Carlo Localization (MCL) process by creating and distributing particles around the robot's starting position. It sets up the initial belief of the robot’s position by adding noise to the given ```(x_, y_, theta_)``` values. Here’s a breakdown of what each part does. This function generates a set of particles that approximate the initial position of the robot. Each particle represents a possible state of the robot with small variations in position and orientation.
+The ```StartMCL``` function initializes the Monte Carlo Localization (MCL) process by creating and distributing particles around the robot's starting position. It sets up the initial belief of the robot’s position by adding noise to the given ```(x_, y_, theta_)``` values. This function generates a set of particles that approximate the initial position of the robot. Each particle represents a possible state of the robot with small variations in position and orientation.
 
 <p align="center">
   <img src="./images/six.png" />
