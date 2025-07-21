@@ -1,9 +1,7 @@
 # Monte Carlo Localization for Vex V5RC Robotics
-
 <p align="center">
-  <img src="./images/fifteen.png" />
+  <img src="./images/fifteen.PNG" />
 </p>
-
 
 **Hi 👋🏿 My name is Apia Okorafor, Former Programmer for team 1082R, now Computer Science Student at the University of Texas at Austin. This is my code and explanation for my implementation of Monte Carlo Localization in Vexcode Pro V5.**
 
