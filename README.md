@@ -93,11 +93,11 @@ Let $d$ be the distance to the wall. Let $\theta$ be the sensor heading. We can 
 
 For a vertical wall:
 
-$x+d\cos{\theta}=x_{wall}\rightarrow d=(x_{wall} - x)/\cos{\theta}$
+$x+d * \cos{\theta}=x_{wall}\rightarrow d=(x_{wall} - x)/\cos{\theta}$
 
-Using that, and Intersection occurs if |y + d sin(θ)| < max_y.
+Using that, and Intersection occurs if $|y + d * sin(θ)| < y_{max}$.
 
-$|y+ sin{\theta}| < y_{max}$
+$|y + sin{\theta}| < y_{max}$
 
 Horizontal walls are similar.
 
