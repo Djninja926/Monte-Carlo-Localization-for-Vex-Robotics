@@ -1,11 +1,15 @@
 # Monte Carlo Localization for Vex V5RC Robotics
 
-**Hi 👋🏿 My name is Apia Okorafor, Former Programmer for team 1082R, now Computer Science Student at the University of Texas at Austin. This is my code and explanation for my implementation of Monte Carlo Localization in Vexcode Pro V5.**
+<p align="center">
+  <img src="./images/fifteen.png" />
+</p>
 
----
+
+**Hi 👋🏿 My name is Apia Okorafor, Former Programmer for team 1082R, now Computer Science Student at the University of Texas at Austin. This is my code and explanation for my implementation of Monte Carlo Localization in Vexcode Pro V5.**
 
 #### Credit to $${\color{purple} Maxx \space Wilson | GHOST}$$, $${\color{red} Benjamin \space | 687D}$$, and [Autonomous Mobile Robotics Laboratory](https://amrl.cs.utexas.edu/interactive-particle-filters/) for the tremendous help in the creation of my code
 
+---
 
 Monte Carlo Localization can be highly useful for improving the robustness and accuracy of the robot’s position tracking, especially in environments with uncertainty or complex features. Since VEX robots often operate in known environments, MCL allows the robot to maintain accurate localization by sampling multiple points of its position and refining them based on data from the distance sensors.
 
@@ -15,7 +19,7 @@ Monte Carlo Localization can be highly useful for improving the robustness and a
 
 **MOST IMPORTANT**
 
-3. This explanation is $${\color{red}NOT}$$ fully in-depth and skips out on a bit of the understanding of the actual physics of the robot to fully understand why certain things work or why certain variables are the value that they are. DO NOT BLINDLY COPY THE CODE because some parts are specific to a certain type of robot. For a full, in-depth understanding of the entire algorithm, take a look at [this paper](https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley), also written by me. 
+3. This white paper provides an introductory overview of particle filters and Monte Carlo localization, designed for educational purposes and within the context of VEX V5RC Robotics. While I strive to have this be a rigorous explanation of the algorithm, I highly suggest reading some actual academic sources as a supplement to this whitepaper. Some good sources are listed at the end of the paper.
 
 ### Particles
 
@@ -123,10 +127,29 @@ The prediction section of the MCL is responsible for predicting the next state o
 
 1. **Get the Robot’s Average Velocity**
    * ```Velo = getAvgVelocity() * VeloScale;```
-   * Computes the average velocity of the robot and scales it with ```VeloScale``` to ensure the motion model is properly adjusted. NEED TO DESCRIBE HOW VELO SCALE IS CALCULATED
-2. **Create a Normal Distribution for Noise NEED TO TALK ABOUT SCALED NOISE DISTRIBUTION**
+   * Computes the average velocity of the robot and scales it with ```VeloScale``` to ensure the motion model is properly adjusted.
+   * The robot’s average velocity from the getAvgVelocity() function is an average of all the motor RPM’s which need to be scaled into inches per second to properly add to the ```X, Y``` coordinates, which are in inches. To properly convert RPM into in/sec, the conversion rate (VeloScale) must be calculated through the following equation:
+
+$${\frac{({rpm}_{\text{motors}} * \pi)}{60} * \text{Wheel Diameter} * \text{Drivebase Gear Ratio}}$$
+
+2. **Create a Scaled Normal Distribution for Noise**
     * ```normal_distribution<double> dist_pos(0, Velo / 4)```;
     * This distribution models the uncertainty in motion by generating small random deviations in the particle positions.
+  
+Traditionally, the normal distribution parameter would be the standard deviation of the robot's movements, or, in an easier way to think about, the amount the robot could theoretically drift away from the prediction (which in the case of VEX is about ```.25``` inches for every loop). However, with this traditional method, we run into an issue. 
+
+Since the robot's speed varies from high to low, the amount the robot could drift each loop (standard deviation) is only a valid representation of the noise of the movements when the robot is going full speed, which isn't the case most of the time, ergo giving us an inaccurate standard deviation. 
+
+So to address this, we make the amount the robot could drift each loop (standard deviation) proportional to the speed of the robot. That way, we have something more like this:
+
+```Robot Moving Slower → Lower Standard Deviation```
+
+```Robot Moving Faster → Higher Standard Deviation```
+
+However, while this **is** better, it's still not good enough. The new problem is that the velocity is too large, giving numbers for the Standard Deviation that don't accurately match up with the real world. To fix this, we **multiply the velocity by the Standard Deviation (```.25```), giving ```Velo / 4```.**
+
+This approach works **scarily** well in estimating the new position and modeling the proper noise for predicting the movements of the robot. The underlying math behind it is a work of art but I won't full explain it here. If you would like to know though feel free to leave a comment. 😏
+
 3. **Calculate the Correct Robot’s Angle (```Theta```)**
     * ```const double theta_ = Angle.rotation(degrees) * toRad + start_theta;```
     * Ensures that the robot’s angle is in radians (Inertial converted from Degrees) and is aligned with the correct starting angle.
@@ -205,6 +228,9 @@ The update section of the MCL performs the weight update step, where each partic
             - `Deviation` is the difference between the predicted and actual measurement.
             - `inv_varience` is the inverse of twice the variance (With a standard deviation of 2 inches).
             - `inv_base` is the normalization factor.
+
+The Gaussian equation calculates how well each particle's predicted sensor measurements match the actual sensor readings, producing the weight for that particle. Particles with measurements closer to the actual measurement receive higher weights (closer to the Gaussian peak), while particles with poor matches receive lower weights, allowing the resampling step to favor more accurate guesses.
+
 6. **Update Total Weight Sum and Assign Weights to Particles**
     - Each particle’s computed weight is stored, and `weights_sum` keeps track of the total sum of all weights.
 7. **Normalize Weights to Ensure a Probability Distribution**
