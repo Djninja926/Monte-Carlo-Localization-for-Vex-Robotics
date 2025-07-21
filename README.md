@@ -126,7 +126,7 @@ The prediction section of the MCL is responsible for predicting the next state o
 1. **Get the Robot’s Average Velocity**
    * ```Velo = getAvgVelocity() * VeloScale;```
    * Computes the average velocity of the robot and scales it with ```VeloScale``` to ensure the motion model is properly adjusted.
-   * The robot’s average velocity from the getAvgVelocity() function is an average of all the motor RPM’s which need to be scaled into inches per second to properly add to the ```X, Y``` coordinates, which are in inches. To properly convert RPM into in/sec, the conversion rate (VeloScale) must be calculated through the following equation:
+   * The robot’s average velocity from the getAvgVelocity() function is an average of all motor ```RPM``` which need to be scaled into inches per second to properly add to the ```X, Y``` coordinates, which are in inches. To properly convert ```RPM``` into ```in/sec```, the conversion rate (VeloScale) must be calculated through the following equation:
 
 $${\frac{({rpm}_{\text{motors}} * \pi)}{60} * \text{Wheel Diameter} * \text{Drivebase Gear Ratio}}$$
 
